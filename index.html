@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .chart-container{
+            max-width: 1250px;
+            margin: auto auto;
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            grid-column-gap: 30px;
+            grid-auto-flow: column;
+        }
+
+        svg{
+            overflow: visible;
+            margin-top: -950px; */
+        }
+
+        h1 {
+            font-family: 'Raleway', sans-serif;
+            max-width: 12500px;
+            font-size: 30px;
+            font-weight: bold; 
+            /* text-align: center; */
+            margin-bottom: 5;
+        }
+        
+        h2 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 24px;
+            line-height: 0px;
+            /* text-align: center; */
+            margin-top: 5;
+            /* text-decoration-line: underline; */
+        }
+
+        h3 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 18px;
+            line-height: 0px;
+            text-align: center;
+            margin-top: 10;
+            margin-bottom:10;
+            /* text-decoration-line: underline; */
+        }
+
+        h4 {
+            font-family: 'Raleway', sans-serif;
+            margin-top: 750px; 
+            font-size: 12px;
+            margin-bottom: 5;
+        }
+
+        h5 {
+            font-family: 'Raleway', sans-serif;
+            margin-top: -10px; 
+            font-size: 12px;
+            margin-bottom: 5;
+        }
+
+        .popup{
+            position: absolute;
+            max-width: 250px;
+            height: 50px;
+            border: 0.5px solid grey;
+            background-color: white;
+            padding: 5px;
+            opacity: 0;
+        }
+
+       .keys_viz{
+            height: 50px;
+            width: 200px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Perú: Nuevos casos positivos COVID-19 según provincia</h1>
+    <h2>(por cada 10 mil habitantes)</h2>
+    <figure style="width:400px;height:25px;margin-left:10px;font-size:25px;font-family: 'Raleway', sans-serif;">
+        <figcaption margin-top="500px"> Casos positivos x 10 mil hab.</figcaption>
+        <img src="leyenda.svg">
+        
+    </figure>
+    <div>
+        <div class = "chart-container single-row">
+            <div>
+                <h3 class = "headline">
+                    Promedio 27/12 - 02/01 <br>
+                </h3>
+            <svg width="500px" height="750px" id="svg1"></svg>
+            <div class="popup"> </div>
+        </div>
+        <div>
+            <h3 class = "headline">
+                Promedio 03/01 - 09/01 <br>
+            </h3>
+            <svg width="500px" height="750px" id="svg2"></svg>
+            <div class="popup"> </div>
+        </div>
+        </div>
+    </div>
+    <h4>Fuente: MINSA. Elaboración: IPE. Preparado por: Victor Fuentes Campos</h4>
+    
+    
+</body>
+
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://unpkg.com/topojson@3"></script>
+
+<script>
+
+
+    let width = 500;
+    let height = 750;
+    let svg1 = d3.select("body").select("#svg1")
+    console.log({svg1})
+    
+
+    d3.json("anteriores.json").then(function (data) {
+
+        console.log({data})
+        let regiones = topojson.feature(data, data.objects.regiones)
+        let provincias = topojson.feature(data, data.objects.provincias)
+
+        let projection = d3.geoIdentity()
+            .fitSize([width, height], regiones)
+            .reflectY(true)   
+
+        let path = d3.geoPath(projection)
+
+        let popup = d3.select(".popup")
+
+        svg1.append("g")
+             .attr("class", "provincias")
+             .selectAll("path")
+             .data(provincias.features.filter(d => d.geometry != null))
+             .join("path")
+             .attr("d", path)
+             .attr("fill", d => d.properties.fill)
+             .attr("stroke", "white")
+             .attr("stroke-width", 1)
+             .on("mouseover", function(pointer_event, d) {
+                d3.selectAll("path")
+                    .style("opacity", 0.5)
+                d3.select(this)
+                    .style("opacity", 1)
+                    // .style("stroke", "black")
+                popup
+                    .style("opacity", 1)
+                    .style("left", (pointer_event.x * 1.05) + "px")
+                    .style("top", (pointer_event.y / 1.05) + "px")
+                    .html(d.properties.provnam + " (" + d.properties.region + ")<br>Casos x 10 mil: " + d3.format(".2f")(d.properties.p_7_100))
+            })
+            .on("mouseout", (pointer_event, d) =>{
+                d3.selectAll("path")
+                    .style("opacity", 1)       
+                    .style("fill", function(d) {return d.properties.fill})
+                    // .style("stroke", "white")
+                popup
+                    .style("opacity", 0)
+            })
+    
+        svg1.append("g")
+            .attr("class", "regiones")
+            .selectAll("path")
+            .data(regiones.features)
+            .join("path")
+            .attr("d", path)
+            .attr("fill", "none")
+            .attr("stroke", "black")
+
+    })
+
+    
+
+    let svg2 = d3.select("body").select("#svg2")
+    console.log({svg2})
+    
+
+    d3.json("previos.json").then(function (data) {
+
+        console.log({data})
+        let regiones = topojson.feature(data, data.objects.regiones)
+        let provincias = topojson.feature(data, data.objects.provincias)
+
+        let projection = d3.geoIdentity()
+            .fitSize([width, height], regiones)
+            .reflectY(true)   
+
+        let path = d3.geoPath(projection)
+
+        let popup = d3.select(".popup")
+
+        svg2.append("g")
+             .attr("class", "provincias")
+             .selectAll("path")
+             .data(provincias.features.filter(d => d.geometry != null))
+             .join("path")
+             .attr("d", path)
+             .attr("fill", d => d.properties.fill)
+             .attr("stroke", "white")
+             .attr("stroke-width", 1)
+             .on("mouseover", function(pointer_event, d) {
+                d3.selectAll("path")
+                    .style("opacity", 0.5)
+                d3.select(this)
+                    .style("opacity", 1)
+                    // .style("stroke", "black")
+                popup
+                    .style("opacity", 1)
+                    .style("left", (pointer_event.x * 1.05) + "px")
+                    .style("top", (pointer_event.y / 1.05) + "px")
+                    .html(d.properties.provnam + " (" + d.properties.region + ")<br>Casos x 10 mil: " + d3.format(".2f")(d.properties.p_7_100))
+            })
+            .on("mouseout", (pointer_event, d) =>{
+                d3.selectAll("path")
+                    .style("opacity", 1)       
+                    .style("fill", function(d) {return d.properties.fill})
+                    // .style("stroke", "white")
+                popup
+                    .style("opacity", 0)
+            })
+
+        svg2.append("g")
+            .attr("class", "regiones")
+            .selectAll("path")
+            .data(regiones.features)
+            .join("path")
+            .attr("d", path)
+            .attr("fill", "none")
+            .attr("stroke", "black")
+
+    })
+
+
+</script>
+
+
+
+</html>
