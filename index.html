@@ -158,7 +158,7 @@
                     .style("opacity", 1)
                     .style("left", (pointer_event.x * 1.05) + "px")
                     .style("top", (pointer_event.y / 1.05) + "px")
-                    .html(d.properties.provnam + " (" + d.properties.region + ")<br>Casos x 10 mil: " + d3.format(".2f")(d.properties.p_7_100))
+                    .html(d.properties.provnam + " (" + d.properties.region + ")<br>Casos x 10 mil: " + d3.format(".2f")(d.properties.p_7_100) + "<br>Casos diarios: " + d3.format(".1f")(d.properties.positvs))
             })
             .on("mouseout", (pointer_event, d) =>{
                 d3.selectAll("path")
@@ -219,7 +219,7 @@
                     .style("opacity", 1)
                     .style("left", (pointer_event.x * 1.05) + "px")
                     .style("top", (pointer_event.y / 1.05) + "px")
-                    .html(d.properties.provnam + " (" + d.properties.region + ")<br>Casos x 10 mil: " + d3.format(".2f")(d.properties.p_7_100))
+                    .html(d.properties.provnam + " (" + d.properties.region + ")<br>Casos x 10 mil: " + d3.format(".2f")(d.properties.p_7_100) + "<br>Casos diarios: " + d3.format(".1f")(d.properties.positvs))
             })
             .on("mouseout", (pointer_event, d) =>{
                 d3.selectAll("path")
