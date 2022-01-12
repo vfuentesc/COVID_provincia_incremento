@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <style>
         .chart-container{
-            max-width: 1000px;
-            margin: auto auto;
-            /* text-align: center; */
+            max-width: 600px;
+            /* margin: auto auto; */
+            text-align: left;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             display: grid;
             grid-template-columns: repeat(2,1fr);
@@ -22,7 +22,7 @@
 
         h1 {
             font-family: 'Raleway', sans-serif;
-            max-width: 1000px;
+            max-width: 600px;
             font-size: 30px;
             font-weight: bold; 
             /* text-align: center; */
@@ -96,14 +96,14 @@
                 <h3 class = "headline">
                     Promedio 28/12 - 03/01 
                 </h3>
-            <svg width="500px" height="750px" id="svg1"></svg>
+            <svg width="400px" height="600px" id="svg1"></svg>
             <div class="popup"> </div>
         </div>
         <div>
             <h3 class = "headline">
                 Promedio 04/01 - 10/01 
             </h3>
-            <svg width="500px" height="750px" id="svg2"></svg>
+            <svg width="400px" height="600px" id="svg2"></svg>
             <div class="popup"> </div>
         </div>
         </div>
@@ -121,7 +121,7 @@
 
 
     let width = 500;
-    let height = 750;
+    let height = 600;
     let svg1 = d3.select("body").select("#svg1")
     console.log({svg1})
     
